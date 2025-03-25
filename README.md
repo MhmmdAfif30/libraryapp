@@ -14,7 +14,7 @@ Muhammad Afif Mu'tashim (mafif357@gmail.com)
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/MhmmdAfif30/TesKerja.git
+   git clone https://github.com/MhmmdAfif30/libraryapp.git
 
    ```
 
