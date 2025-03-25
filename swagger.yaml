@@ -1,0 +1,305 @@
+openapi: 3.0.3
+info:
+  title: Backend Test Case
+  description: |-
+    Aplikasi ini akan berguna untuk membantu terkait API Documents
+  contact:
+    email: mafif357@gmail.com
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+tags:
+  - name: Members
+    description: Operations related to Members
+  - name: Books
+    description: Operations related to Books
+  - name: Borrows
+    description: Operations related to Borrows
+paths:
+  /members:
+    post:
+      tags:
+        - Members
+      operationId: post-create-new-members
+      summary: Create a new member
+      description: Creates a new member with the provided information.
+      requestBody:
+        $ref: "#/components/requestBodies/CreateUser"
+      responses:
+        "201":
+          description: Successful member creation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/UserModel"
+    get:
+      tags:
+        - Members
+      operationId: get-fetch-all-members
+      summary: Get all members
+      description: Retrieves a list of all registered members.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: false
+          description: Page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+          description: Number of items per page.
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          pagination:
+                            $ref: "#/components/schemas/Pagination"
+                          members:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/UserModel"
+
+  /books:
+    post:
+      tags:
+        - Books
+      operationId: post-create-new-books
+      summary: Create a new book
+      description: Creates a new book with the provided information.
+      requestBody:
+        $ref: "#/components/requestBodies/CreateBook"
+      responses:
+        "201":
+          description: Successful book creation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BookModel"
+    get:
+      tags:
+        - Books
+      operationId: get-fetch-all-books
+      summary: Get all books
+      description: Retrieves a list of all books.
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/BookModel"
+
+  /borrows:
+    post:
+      tags:
+        - Borrows
+      operationId: post-create-borrow
+      summary: Create a new borrow record
+      description: Creates a new borrow record with the provided information.
+      requestBody:
+        $ref: "#/components/requestBodies/CreateBorrow"
+      responses:
+        "201":
+          description: Successful borrow creation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/BorrowModel"
+
+  /returns:
+    post:
+      tags:
+        - Borrows
+      operationId: post-return-borrow
+      summary: Return a borrowed book
+      description: Creates a record for returning a borrowed book.
+      requestBody:
+        $ref: "#/components/requestBodies/CreateReturn"
+      responses:
+        "201":
+          description: Successful return
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BasicResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/ReturnModel"
+
+components:
+  schemas:
+    BasicResponse:
+      title: BasicResponse
+      type: object
+      properties:
+        status:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Request was successful"
+    UserModel:
+      title: User
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Angga"
+        code:
+          type: string
+          example: "M001"
+    BookModel:
+      title: Book
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        code:
+          type: string
+          example: "NRN-7"
+        title:
+          type: string
+          example: "The Lion, the Witch and the Wardrobe"
+        author:
+          type: string
+          example: "C.S. Lewis"
+        stock:
+          type: integer
+          example: 1
+    BorrowModel:
+      title: Borrow
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        memberId:
+          type: integer
+          example: 2
+        bookId:
+          type: integer
+          example: 2
+    ReturnModel:
+      title: Return
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        memberId:
+          type: integer
+          example: 2
+        bookId:
+          type: integer
+          example: 2
+    Pagination:
+      title: Pagination
+      type: object
+      properties:
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              example: "https://domain.com/users?page=3&limit=10"
+            prev:
+              type: string
+              example: "https://domain.com/users?page=1&limit=10"
+        total_items:
+          type: integer
+          example: 100
+  requestBodies:
+    CreateUser:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Angga"
+              code:
+                type: string
+                example: "M001"
+    CreateBook:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "NRN-7"
+              title:
+                type: string
+                example: "The Lion, the Witch and the Wardrobe"
+              author:
+                type: string
+                example: "C.S. Lewis"
+              stock:
+                type: integer
+                example: 1
+    CreateBorrow:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              memberId:
+                type: integer
+                example: 2
+              bookId:
+                type: integer
+                example: 2
+    CreateReturn:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              memberId:
+                type: integer
+                example: 2
+              bookId:
+                type: integer
+                example: 2
